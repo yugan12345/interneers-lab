@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-
+from django.http import HttpResponse
 from .validators import validate_product_data
 
 PRODUCTS = {}
@@ -82,6 +82,15 @@ class ProductListView(View):
                 status=400,
             )
 
+        if not isinstance(data, dict):
+            return JsonResponse(
+                {
+                    "error": "Invalid request body",
+                    "message": 'Request body must be a JSON object e.g. {"name": "iPhone"}',
+                },
+                status=400,
+            )
+
         errors = validate_product_data(data, require_all_fields=True)
         if errors:
             return JsonResponse(
@@ -113,8 +122,8 @@ class ProductListView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class ProductDetailView(View):
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
-    
+    http_method_names = ["get", "post", "put", "patch", "delete"]
+
     def get_product_or_404(self, product_id):
         return PRODUCTS.get(product_id)
 
@@ -149,6 +158,15 @@ class ProductDetailView(View):
                 {
                     "error": "Invalid JSON",
                     "message": "Request body must be valid JSON.",
+                },
+                status=400,
+            )
+
+        if not isinstance(data, dict):
+            return JsonResponse(
+                {
+                    "error": "Invalid request body",
+                    "message": 'Request body must be a JSON object e.g. {"name": "iPhone"}',
                 },
                 status=400,
             )
@@ -202,7 +220,14 @@ class ProductDetailView(View):
                 },
                 status=400,
             )
-
+        if not isinstance(data, dict):
+            return JsonResponse(
+                {
+                    "error": "Invalid request body",
+                    "message": 'Request body must be a JSON object e.g. {"name": "iPhone"}',
+                },
+                status=400,
+            )
         if not data:
             return JsonResponse(
                 {
@@ -254,10 +279,4 @@ class ProductDetailView(View):
             )
 
         del PRODUCTS[product_id]
-        return JsonResponse(
-            {
-                "message": f"Product {product_id} deleted successfully",
-                "deleted_product": product,
-            },
-            status=200,
-        )
+        return HttpResponse(status=204)
