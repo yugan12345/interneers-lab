@@ -2,14 +2,8 @@ from django.core.exceptions import ValidationError
 
 
 def validate_product_data(data, require_all_fields=True):
-    """
-    Validates incoming product data.
-    - require_all_fields=True  → used when creating a product (all fields must be present)
-    - require_all_fields=False → used when updating a product (only sent fields are checked)
-    """
     errors = {}
 
-    # If creating, these fields are mandatory
     if require_all_fields:
         required_fields = [
             "name",
@@ -23,25 +17,28 @@ def validate_product_data(data, require_all_fields=True):
             if field not in data or data[field] in [None, ""]:
                 errors[field] = f"{field} is required"
 
-    # Validate price if provided
-    if "price" in data and data['price'] not in [None, '']:
-        try:
-            price = float(data["price"])
-            if price <= 0:
-                errors["price"] = "Price must be a positive non-zero number"
-        except (ValueError, TypeError):
-            errors["price"] = "Price must be a valid number"
+    if "price" in data:
+        if data["price"] in [None, ""]:
+            errors["price"] = "Price cannot be null or empty"
+        else:
+            try:
+                price = float(data["price"])
+                if price <= 0:
+                    errors["price"] = "Price must be a positive non-zero number"
+            except (ValueError, TypeError):
+                errors["price"] = "Price must be a valid number"
 
-    # Validate quantity if provided
-    if "quantity" in data and data['quantity'] not in [None, '']:
-        try:
-            quantity = int(data["quantity"])
-            if quantity <= 0:
-                errors["quantity"] = "Quantity must be a positive non-zero integer"
-        except (ValueError, TypeError):
-            errors["quantity"] = "Quantity must be a valid integer"
+    if "quantity" in data:
+        if data["quantity"] in [None, ""]:
+            errors["quantity"] = "Quantity cannot be null or empty"
+        else:
+            try:
+                quantity = int(data["quantity"])
+                if quantity <= 0:
+                    errors["quantity"] = "Quantity must be a positive non-zero integer"
+            except (ValueError, TypeError):
+                errors["quantity"] = "Quantity must be a valid integer"
 
-    # Validate name length if provided
     if "name" in data and data["name"]:
         if len(data["name"]) > 255:
             errors["name"] = "Name must be under 255 characters"

@@ -113,6 +113,8 @@ class ProductListView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class ProductDetailView(View):
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
+    
     def get_product_or_404(self, product_id):
         return PRODUCTS.get(product_id)
 
@@ -129,6 +131,57 @@ class ProductDetailView(View):
         return JsonResponse(product, status=200)
 
     def put(self, request, product_id):
+        """All fields required"""
+        product = self.get_product_or_404(product_id)
+        if not product:
+            return JsonResponse(
+                {
+                    "error": "Product not found",
+                    "message": f"No product exists with ID {product_id}. Cannot update.",
+                },
+                status=404,
+            )
+
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {
+                    "error": "Invalid JSON",
+                    "message": "Request body must be valid JSON.",
+                },
+                status=400,
+            )
+
+        errors = validate_product_data(data, require_all_fields=True)
+        if errors:
+            return JsonResponse(
+                {
+                    "error": "Validation failed",
+                    "message": "All fields are required for a full update.",
+                    "details": errors,
+                },
+                status=400,
+            )
+
+        product = {
+            "id": product_id,
+            "name": data["name"],
+            "description": data["description"],
+            "category": data["category"],
+            "price": float(data["price"]),
+            "brand": data["brand"],
+            "quantity": int(data["quantity"]),
+        }
+
+        PRODUCTS[product_id] = product
+        return JsonResponse(
+            {"message": "Product fully updated successfully", "product": product},
+            status=200,
+        )
+
+    def patch(self, request, product_id):
+        """Partial update — only send fields you want to change"""
         product = self.get_product_or_404(product_id)
         if not product:
             return JsonResponse(
@@ -154,7 +207,7 @@ class ProductDetailView(View):
             return JsonResponse(
                 {
                     "error": "Empty request body",
-                    "message": "Provide at least one field to update e.g. price, quantity, name.",
+                    "message": "Provide at least one field to update.",
                 },
                 status=400,
             )
@@ -185,7 +238,8 @@ class ProductDetailView(View):
 
         PRODUCTS[product_id] = product
         return JsonResponse(
-            {"message": "Product updated successfully", "product": product}, status=200
+            {"message": "Product partially updated successfully", "product": product},
+            status=200,
         )
 
     def delete(self, request, product_id):
