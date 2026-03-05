@@ -39,8 +39,22 @@ def validate_product_data(data, require_all_fields=True):
             except (ValueError, TypeError):
                 errors["quantity"] = "Quantity must be a valid integer"
 
-    if "name" in data and data["name"]:
-        if len(data["name"]) > 255:
+    if "name" in data:
+        if data["name"] in [None, ""]:
+            errors["name"] = "Name cannot be null or empty"
+        elif len(data["name"]) > 255:
             errors["name"] = "Name must be under 255 characters"
+
+    if "description" in data:
+        if data["description"] in [None, ""]:
+            errors["description"] = "Description cannot be null or empty"
+
+    if "category" in data:
+        if data["category"] in [None, ""]:
+            errors["category"] = "Category cannot be null or empty"
+
+    if "brand" in data:
+        if data["brand"] in [None, ""]:
+            errors["brand"] = "Brand cannot be null or empty"
 
     return errors
