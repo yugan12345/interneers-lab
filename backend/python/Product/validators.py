@@ -24,20 +24,20 @@ def validate_product_data(data, require_all_fields=True):
                 errors[field] = f"{field} is required"
 
     # Validate price if provided
-    if "price" in data:
+    if "price" in data and data['price'] not in [None, '']:
         try:
             price = float(data["price"])
-            if price < 0:
-                errors["price"] = "Price must be a positive number"
+            if price <= 0:
+                errors["price"] = "Price must be a positive non-zero number"
         except (ValueError, TypeError):
             errors["price"] = "Price must be a valid number"
 
     # Validate quantity if provided
-    if "quantity" in data:
+    if "quantity" in data and data['quantity'] not in [None, '']:
         try:
             quantity = int(data["quantity"])
-            if quantity < 0:
-                errors["quantity"] = "Quantity must be a positive integer"
+            if quantity <= 0:
+                errors["quantity"] = "Quantity must be a positive non-zero integer"
         except (ValueError, TypeError):
             errors["quantity"] = "Quantity must be a valid integer"
 
