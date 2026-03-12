@@ -1,6 +1,4 @@
 # django_app/urls.py
-
-from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
 
@@ -18,11 +16,10 @@ def hello_name(request):
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path("hello/", hello_name),
     path("products/", ProductListView.as_view()),  # GET all, POST new
     path(
-        "products/<int:product_id>/", ProductDetailView.as_view()
+        "products/<str:product_id>/", ProductDetailView.as_view()
     ),  # GET one, PUT, DELETE
     # Example usage: /hello/?name=Bob
     # returns {"message": "Hello, Bob!"}
