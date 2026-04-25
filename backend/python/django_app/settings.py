@@ -20,16 +20,21 @@ ALLOWED_HOSTS = (
 )
 
 INSTALLED_APPS = [
+    "corsheaders",
     "django.contrib.staticfiles",
     "Product",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = "django_app.urls"
 
