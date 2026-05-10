@@ -1,0 +1,127 @@
+.product-detail {
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 28px;
+  animation: expand-in 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes expand-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.product-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.product-detail-category {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e8ff47;
+  background: rgba(232, 255, 71, 0.08);
+  border: 1px solid rgba(232, 255, 71, 0.2);
+  border-radius: 2px;
+  padding: 3px 8px;
+}
+
+.product-detail-close {
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  color: #8a8a84;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 10px;
+  transition: all 200ms ease;
+}
+
+.product-detail-close:hover {
+  border-color: #555;
+  color: #f0f0ee;
+}
+
+.product-detail-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  color: #f0f0ee;
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+
+.product-detail-desc {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: #8a8a84;
+  line-height: 1.7;
+  margin: 0 0 24px;
+}
+
+.product-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #0d0d0d;
+  border-radius: 6px;
+  border: 1px solid #1c1c1c;
+}
+
+.product-detail-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-detail-stat-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #555550;
+}
+
+.product-detail-stat-value {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #f0f0ee;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.product-detail-stat-value.accent { color: #e8ff47; }
+.product-detail-stat-value.danger { color: #ff4757; }
+.product-detail-stat-value.muted  {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 400;
+  color: #555550;
+  word-break: break-all;
+}
+
+.low-stock-badge {
+  font-size: 9px;
+  background: rgba(255, 71, 87, 0.15);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  color: #ff4757;
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+  font-family: 'DM Mono', monospace;
+  font-weight: 400;
+}
+
+.product-detail-dates {
+  display: flex;
+  gap: 20px;
+  font-size: 11px;
+  color: #555550;
+  font-family: 'DM Mono', monospace;
+}

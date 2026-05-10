@@ -1,0 +1,45 @@
+.products-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+}
+
+.products-page-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.products-page-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 32px;
+  color: #f0f0ee;
+}
+
+.products-page-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: #555550;
+}
+
+.products-page-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 71, 87, 0.08);
+  border: 1px solid rgba(255, 71, 87, 0.25);
+  border-radius: 6px;
+  color: #ff4757;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  margin-bottom: 24px;
+  padding: 14px 18px;
+}
+
+.error-icon { font-size: 16px; }
+
+@media (max-width: 768px) {
+  .products-page { padding: 24px 16px 60px; }
+}
