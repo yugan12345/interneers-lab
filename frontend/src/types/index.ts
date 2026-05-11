@@ -50,3 +50,12 @@ export interface ProductFilters {
   maxPrice?: string;
   categoryId?: string;
 }
+
+export interface ProductPayload {
+  name: string;
+  description: string;
+  brand: string;
+  price: number;
+  quantity: number;
+  category?: string | null;  // just the id
+}

@@ -13,20 +13,29 @@ import type {
   Product,
   Category,
   ProductFilters,
+  ProductPayload,
 } from "../types";
 
 const API_BASE = process.env.REACT_APP_API_BASE ?? "http://localhost:8000";
 
 // ── helpers ──────────────────────────────────────────────────────────
 
-async function apiFetch<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`);
+async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE}${path}`, options);
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
     throw new Error(body.error ?? `HTTP ${response.status}`);
   }
+  // DELETE returns 204 No Content — nothing to parse
+  if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
 }
+
+const jsonOptions = (method: string, body: unknown): RequestInit => ({
+  method,
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(body),
+});
 
 // ── Products ─────────────────────────────────────────────────────────
 
@@ -49,6 +58,31 @@ export async function fetchProduct(id: string): Promise<Product> {
   return apiFetch<Product>(`/products/${id}/`);
 }
 
+export async function createProduct(data: ProductPayload): Promise<Product> {
+  return apiFetch<Product>("/products/", jsonOptions("POST", data));
+}
+
+export async function updateProduct(
+  id: string,
+  data: Partial<ProductPayload>
+): Promise<Product> {
+  return apiFetch<Product>(`/products/${id}/`, jsonOptions("PUT", data));
+}
+
+export async function deleteProduct(id: string): Promise<void> {
+  return apiFetch<void>(`/products/${id}/`, { method: "DELETE" });
+}
+
+export async function moveProductCategory(
+  productId: string,
+  categoryId: string
+): Promise<Product> {
+  return apiFetch<Product>(
+    `/products/${productId}/`,
+    jsonOptions("PATCH", { category: categoryId })
+  );
+}
+
 export async function fetchProductsByCategory(
   categoryId: string
 ): Promise<{ category: Category; total_products: number; products: Product[] }> {
@@ -65,4 +99,21 @@ export async function fetchCategories(
 
 export async function fetchCategory(id: string): Promise<Category> {
   return apiFetch<Category>(`/categories/${id}/`);
+}
+
+export async function createCategory(
+  data: Omit<Category, "id" | "created_at" | "updated_at">
+): Promise<Category> {
+  return apiFetch<Category>("/categories/", jsonOptions("POST", data));
+}
+
+export async function updateCategory(
+  id: string,
+  data: Partial<Omit<Category, "id" | "created_at" | "updated_at">>
+): Promise<Category> {
+  return apiFetch<Category>(`/categories/${id}/`, jsonOptions("PUT", data));
+}
+
+export async function deleteCategory(id: string): Promise<void> {
+  return apiFetch<void>(`/categories/${id}/`, { method: "DELETE" });
 }

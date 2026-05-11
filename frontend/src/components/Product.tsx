@@ -15,14 +15,16 @@ import "./Product.css";
 
 interface Props {
   product: ProductType;
-  onClose?: () => void; // only present when used inside ProductList
+  onClose?: () => void;
+  onEdit?: (product: ProductType) => void;
+  onDelete?: (product: ProductType) => void;
 }
 
 function formatPrice(price: number): string {
   return "$" + price.toFixed(2);
 }
 
-export default function Product({ product, onClose }: Props) {
+export default function Product({ product, onClose, onEdit, onDelete }: Props) {
   const isLowStock = product.quantity <= 5;
 
   return (
@@ -31,11 +33,29 @@ export default function Product({ product, onClose }: Props) {
         <div className="product-detail-category">
           {product.category?.title ?? "Uncategorized"}
         </div>
-        {onClose && (
-          <button className="product-detail-close" onClick={onClose}>
-            ✕
-          </button>
-        )}
+        <div className="product-detail-header-actions">
+          {onEdit && (
+            <button
+              className="btn-edit"
+              onClick={() => onEdit(product)}
+            >
+              Edit
+            </button>
+          )}
+          {onDelete && (
+            <button
+              className="btn-delete"
+              onClick={() => onDelete(product)}
+            >
+              Delete
+            </button>
+          )}
+          {onClose && (
+            <button className="product-detail-close" onClick={onClose}>
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
       <h2 className="product-detail-name">{product.name}</h2>

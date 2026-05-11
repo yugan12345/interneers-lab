@@ -125,3 +125,28 @@
   color: #555550;
   font-family: 'DM Mono', monospace;
 }
+.product-detail-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-edit {
+  background: #f0f4ff;
+  color: #2563eb;
+  border: 1px solid #c7d7fd;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.btn-delete {
+  background: #fff0f0;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.82rem;
+}

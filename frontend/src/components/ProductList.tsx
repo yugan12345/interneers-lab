@@ -20,6 +20,8 @@ interface Props {
   products: Product[];
   loading?: boolean;
   emptyMessage?: string;
+  onEdit?: (product: Product) => void;
+  onDelete?: (product: Product) => void;
 }
 
 // Dummy data used in Week 7 when no real products are passed
@@ -135,15 +137,15 @@ export default function ProductList({
   products,
   loading = false,
   emptyMessage = "No products found",
+  onEdit,
+  onDelete,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  // Use dummy data in week 7 when products array is empty and not loading
   const displayProducts = products.length > 0 ? products : (!loading ? DUMMY_PRODUCTS : []);
   const selectedProduct = displayProducts.find(p => p.id === selectedId) ?? null;
 
   function handleCardClick(id: string) {
-    // Toggle: clicking selected card collapses it
     setSelectedId(prev => (prev === id ? null : id));
   }
 
@@ -179,11 +181,12 @@ export default function ProductList({
         ))}
       </div>
 
-      {/* Expanded detail panel — shown below grid when a card is selected */}
       {selectedProduct && (
         <ProductDetail
           product={selectedProduct}
           onClose={() => setSelectedId(null)}
+          onEdit={onEdit}
+          onDelete={onDelete}
         />
       )}
     </div>
