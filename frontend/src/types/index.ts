@@ -57,5 +57,10 @@ export interface ProductPayload {
   brand: string;
   price: number;
   quantity: number;
-  category?: string | null;  // just the id
+  category_id?: string | null; 
+}
+
+export interface ProductResponse {
+  message: string;
+  product: Product;
 }

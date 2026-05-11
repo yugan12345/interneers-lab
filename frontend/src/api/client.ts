@@ -11,6 +11,7 @@ import type {
   PaginatedProducts,
   PaginatedCategories,
   Product,
+  ProductResponse,
   Category,
   ProductFilters,
   ProductPayload,
@@ -59,14 +60,16 @@ export async function fetchProduct(id: string): Promise<Product> {
 }
 
 export async function createProduct(data: ProductPayload): Promise<Product> {
-  return apiFetch<Product>("/products/", jsonOptions("POST", data));
+  const res = await apiFetch<ProductResponse>("/products/", jsonOptions("POST", data));
+  return res.product;
 }
 
 export async function updateProduct(
   id: string,
   data: Partial<ProductPayload>
 ): Promise<Product> {
-  return apiFetch<Product>(`/products/${id}/`, jsonOptions("PUT", data));
+  const res = await apiFetch<ProductResponse>(`/products/${id}/`, jsonOptions("PUT", data));
+  return res.product;
 }
 
 export async function deleteProduct(id: string): Promise<void> {
@@ -77,10 +80,11 @@ export async function moveProductCategory(
   productId: string,
   categoryId: string
 ): Promise<Product> {
-  return apiFetch<Product>(
-    `/products/${productId}/`,
-    jsonOptions("PATCH", { category: categoryId })
+  const res = await apiFetch<ProductResponse>(
+    `/products/${productId}/category/`,
+    jsonOptions("PUT", { category_id: categoryId })
   );
+  return res.product;
 }
 
 export async function fetchProductsByCategory(

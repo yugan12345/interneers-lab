@@ -55,7 +55,7 @@ export default function ProductForm({
       brand:       form.brand.trim(),
       price:       Number(form.price),
       quantity:    Number(form.quantity),
-      category:    form.category || null,
+      category_id: form.category || null,
     });
   }
 
