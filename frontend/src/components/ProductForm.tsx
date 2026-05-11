@@ -44,10 +44,10 @@ export default function ProductForm({
   }
 
   function handleSubmit() {
-    if (!form.name.trim())         return setValidationError("Name is required");
-    if (!form.brand.trim())        return setValidationError("Brand is required");
-    if (Number(form.price) <= 0)   return setValidationError("Price must be greater than 0");
-    if (Number(form.quantity) < 0) return setValidationError("Quantity cannot be negative");
+    if (!form.name.trim())          return setValidationError("Name is required");
+    if (!form.brand.trim())         return setValidationError("Brand is required");
+    if (Number(form.price) <= 0)    return setValidationError("Price must be greater than 0");
+    if (Number(form.quantity) <= 0) return setValidationError("Quantity must be greater than 0");  // ← was < 0
 
     onSave({
       name:        form.name.trim(),
@@ -83,11 +83,11 @@ export default function ProductForm({
           </label>
           <div className="form-row">
             <label>Price *
-              <input name="price" type="number" min="0" step="0.01"
+              <input name="price" type="number" min="0.01" step="0.01"
                 value={form.price} onChange={handleChange} />
             </label>
             <label>Quantity *
-              <input name="quantity" type="number" min="0"
+              <input name="quantity" type="number" min="1"
                 value={form.quantity} onChange={handleChange} />
             </label>
           </div>

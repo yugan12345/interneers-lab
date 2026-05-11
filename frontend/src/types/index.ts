@@ -6,6 +6,10 @@
  *   - TypeScript catches mismatches at compile time, not runtime
  *   - Changing the API response shape only requires updating this file
  */
+export interface CategoryResponse {
+  message: string;
+  category: Category;
+}
 
 export interface Category {
   id: string;
