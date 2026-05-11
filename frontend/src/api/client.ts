@@ -1,10 +1,5 @@
 /**
  * API client — all fetch calls to the Django backend live here.
- *
- * Centralising API calls means:
- *   - Components never construct URLs directly
- *   - Changing the base URL or adding auth headers only needs one change
- *   - Each function has a clear return type so TypeScript can help callers
  */
 
 import type {
@@ -28,7 +23,6 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
     const body = await response.json().catch(() => ({}));
     throw new Error(body.error ?? `HTTP ${response.status}`);
   }
-  // DELETE returns 204 No Content — nothing to parse
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
 }
@@ -67,7 +61,7 @@ export async function createProduct(data: ProductPayload): Promise<Product> {
 
 export async function updateProduct(
   id: string,
-  data: Partial<ProductPayload>
+  data: ProductPayload          // ← was Partial<ProductPayload>, PUT requires all fields
 ): Promise<Product> {
   const res = await apiFetch<ProductResponse>(`/products/${id}/`, jsonOptions("PUT", data));
   return res.product;
