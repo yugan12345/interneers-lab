@@ -33,7 +33,7 @@ export function useProducts(pageSize = 9) {
         if (cancelled) return;
         setProducts(data.products);
         setTotalPages(data.total_pages);
-        setTotalProducts(data.total_products);  // ← was total_count
+        setTotalProducts(data.total_products); // ← was total_count
       })
       .catch((e) => {
         if (cancelled) return;
@@ -43,12 +43,20 @@ export function useProducts(pageSize = 9) {
         if (cancelled) return;
         setLoading(false);
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [page, pageSize, filters, tick]);
 
   return {
-    products, loading, error,
-    page, totalPages, totalProducts,
-    setPage, setFilters, refresh,
+    products,
+    loading,
+    error,
+    page,
+    totalPages,
+    totalProducts,
+    setPage,
+    setFilters,
+    refresh,
   };
 }

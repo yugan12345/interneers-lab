@@ -14,10 +14,14 @@ import ProductForm from "../components/ProductForm";
 import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
 import { createProduct, updateProduct, deleteProduct } from "../api/client";
-import type { Product, ProductPayload } from "../types";
+import type { Category, Product, ProductPayload } from "../types";
 import "./ProductsPage.css";
 
-export default function ProductsPage() {
+interface Props {
+  pageSize?: number;
+}
+
+export default function ProductsPage({ pageSize = 9 }: Props) {
   const {
     products,
     loading,
@@ -28,14 +32,17 @@ export default function ProductsPage() {
     setPage,
     setFilters,
     refresh,
-  } = useProducts(9);
+  } = useProducts(pageSize);
 
-  const { categories } = useCategories();
+  const { categories, refresh: refreshCategories } = useCategories();
 
   // null = form closed | undefined = creating new | Product = editing existing
   const [formProduct, setFormProduct] = useState<Product | undefined | null>(null);
   const [saving, setSaving] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [extraCategories, setExtraCategories] = useState<Category[]>([]);
+
+  const allCategories = [...categories, ...extraCategories];
 
   async function handleSave(data: ProductPayload) {
     setSaving(true);
@@ -66,6 +73,12 @@ export default function ProductsPage() {
     }
   }
 
+  function handleCategoryCreated(cat: Category) {
+    setExtraCategories((prev) => [...prev, cat]);
+    // Also refresh the main categories hook so FilterBar stays in sync
+    refreshCategories?.();
+  }
+
   return (
     <div className="products-page">
       <div className="products-page-title-row">
@@ -82,7 +95,7 @@ export default function ProductsPage() {
       </div>
 
       <FilterBar
-        categories={categories}
+        categories={allCategories}
         onFilterChange={setFilters}
         loading={loading}
       />
@@ -114,10 +127,11 @@ export default function ProductsPage() {
       {formProduct !== null && (
         <ProductForm
           product={formProduct}
-          categories={categories}
+          categories={allCategories}
           saving={saving}
           onSave={handleSave}
           onClose={() => setFormProduct(null)}
+          onCategoryCreated={handleCategoryCreated}
         />
       )}
     </div>

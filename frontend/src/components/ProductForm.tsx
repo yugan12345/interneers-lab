@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { Product, Category, ProductPayload } from "../types";
+import { createCategory } from "../api/client";
 import "./ProductForm.css";
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
   saving: boolean;
   onSave: (data: ProductPayload) => void;
   onClose: () => void;
+  onCategoryCreated?: (cat: Category) => void;
 }
 
 const empty = {
@@ -16,10 +18,15 @@ const empty = {
 };
 
 export default function ProductForm({
-  product, categories, saving, onSave, onClose,
+  product, categories, saving, onSave, onClose, onCategoryCreated,
 }: Props) {
   const [form, setForm] = useState({ ...empty });
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCatTitle, setNewCatTitle] = useState("");
+  const [newCatDesc, setNewCatDesc] = useState("");
+  const [creatingCat, setCreatingCat] = useState(false);
+  const [catError, setCatError] = useState<string | null>(null);
 
   useEffect(() => {
     if (product) {
@@ -43,9 +50,31 @@ export default function ProductForm({
     setValidationError(null);
   }
 
+  async function handleCreateCategory() {
+    if (!newCatTitle.trim()) return setCatError("Title is required");
+    if (!newCatDesc.trim())  return setCatError("Description is required");
+    setCreatingCat(true);
+    setCatError(null);
+    try {
+      const cat = await createCategory({
+        title:       newCatTitle.trim(),
+        description: newCatDesc.trim(),
+      });
+      onCategoryCreated?.(cat);
+      setForm(f => ({ ...f, category: cat.id }));
+      setShowNewCategory(false);
+      setNewCatTitle("");
+      setNewCatDesc("");
+    } catch (e: any) {
+      setCatError(e.message ?? "Failed to create category");
+    } finally {
+      setCreatingCat(false);
+    }
+  }
+
   function handleSubmit() {
     if (!form.name.trim())          return setValidationError("Name is required");
-    if (!form.description.trim())   return setValidationError("Description is required");  // ← added
+    if (!form.description.trim())   return setValidationError("Description is required");
     if (!form.brand.trim())         return setValidationError("Brand is required");
     if (Number(form.price) <= 0)    return setValidationError("Price must be greater than 0");
     if (Number(form.quantity) <= 0) return setValidationError("Quantity must be greater than 0");
@@ -77,7 +106,8 @@ export default function ProductForm({
             <input name="name" value={form.name} onChange={handleChange} />
           </label>
           <label>Description *
-            <textarea name="description" value={form.description} onChange={handleChange} rows={3} />
+            <textarea name="description" value={form.description}
+              onChange={handleChange} rows={3} />
           </label>
           <label>Brand *
             <input name="brand" value={form.brand} onChange={handleChange} />
@@ -92,6 +122,8 @@ export default function ProductForm({
                 value={form.quantity} onChange={handleChange} />
             </label>
           </div>
+
+          {/* Category selector + inline create */}
           <label>Category
             <select name="category" value={form.category} onChange={handleChange}>
               <option value="">— None —</option>
@@ -100,6 +132,42 @@ export default function ProductForm({
               ))}
             </select>
           </label>
+
+          <button
+            type="button"
+            className="btn-add-category"
+            onClick={() => { setShowNewCategory(v => !v); setCatError(null); }}
+          >
+            {showNewCategory ? "▲ Cancel new category" : "+ Create new category"}
+          </button>
+
+          {showNewCategory && (
+            <div className="new-category-form">
+              {catError && <div className="form-error">⚠ {catError}</div>}
+              <label>Category Title *
+                <input
+                  value={newCatTitle}
+                  onChange={e => { setNewCatTitle(e.target.value); setCatError(null); }}
+                  placeholder="e.g. Kitchen Essentials"
+                />
+              </label>
+              <label>Category Description *
+                <input
+                  value={newCatDesc}
+                  onChange={e => { setNewCatDesc(e.target.value); setCatError(null); }}
+                  placeholder="e.g. Cooking and kitchen tools"
+                />
+              </label>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={handleCreateCategory}
+                disabled={creatingCat}
+              >
+                {creatingCat ? "Creating…" : "Create & Select"}
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="modal-footer">

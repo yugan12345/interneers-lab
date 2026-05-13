@@ -30,23 +30,15 @@ export default function Product({ product, onClose, onEdit, onDelete }: Props) {
   return (
     <div className="product-detail">
       <div className="product-detail-header">
-        <div className="product-detail-category">
-          {product.category?.title ?? "Uncategorized"}
-        </div>
+        <div className="product-detail-category">{product.category?.title ?? "Uncategorized"}</div>
         <div className="product-detail-header-actions">
           {onEdit && (
-            <button
-              className="btn-edit"
-              onClick={() => onEdit(product)}
-            >
+            <button className="btn-edit" onClick={() => onEdit(product)}>
               Edit
             </button>
           )}
           {onDelete && (
-            <button
-              className="btn-delete"
-              onClick={() => onDelete(product)}
-            >
+            <button className="btn-delete" onClick={() => onDelete(product)}>
               Delete
             </button>
           )}
@@ -64,9 +56,7 @@ export default function Product({ product, onClose, onEdit, onDelete }: Props) {
       <div className="product-detail-grid">
         <div className="product-detail-stat">
           <span className="product-detail-stat-label">Price</span>
-          <span className="product-detail-stat-value accent">
-            {formatPrice(product.price)}
-          </span>
+          <span className="product-detail-stat-value accent">{formatPrice(product.price)}</span>
         </div>
         <div className="product-detail-stat">
           <span className="product-detail-stat-label">Brand</span>

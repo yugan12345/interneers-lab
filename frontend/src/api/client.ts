@@ -43,9 +43,9 @@ export async function fetchProducts(
   const params = new URLSearchParams();
   params.set("page", String(page));
   params.set("page_size", String(pageSize));
-  if (filters.search)     params.set("search", filters.search);
-  if (filters.minPrice)   params.set("min_price", filters.minPrice);
-  if (filters.maxPrice)   params.set("max_price", filters.maxPrice);
+  if (filters.search) params.set("search", filters.search);
+  if (filters.minPrice) params.set("min_price", filters.minPrice);
+  if (filters.maxPrice) params.set("max_price", filters.maxPrice);
   if (filters.categoryId) params.set("category_ids", filters.categoryId);
   return apiFetch<PaginatedProducts>(`/products/?${params}`);
 }
@@ -61,7 +61,7 @@ export async function createProduct(data: ProductPayload): Promise<Product> {
 
 export async function updateProduct(
   id: string,
-  data: ProductPayload          // ← was Partial<ProductPayload>, PUT requires all fields
+  data: ProductPayload // ← was Partial<ProductPayload>, PUT requires all fields
 ): Promise<Product> {
   const res = await apiFetch<ProductResponse>(`/products/${id}/`, jsonOptions("PUT", data));
   return res.product;
@@ -71,10 +71,7 @@ export async function deleteProduct(id: string): Promise<void> {
   return apiFetch<void>(`/products/${id}/`, { method: "DELETE" });
 }
 
-export async function moveProductCategory(
-  productId: string,
-  categoryId: string
-): Promise<Product> {
+export async function moveProductCategory(productId: string, categoryId: string): Promise<Product> {
   const res = await apiFetch<ProductResponse>(
     `/products/${productId}/category/`,
     jsonOptions("PUT", { category_id: categoryId })
@@ -90,9 +87,7 @@ export async function fetchProductsByCategory(
 
 // ── Categories ───────────────────────────────────────────────────────
 
-export async function fetchCategories(
-  pageSize = 50
-): Promise<PaginatedCategories> {
+export async function fetchCategories(pageSize = 50): Promise<PaginatedCategories> {
   return apiFetch<PaginatedCategories>(`/categories/?page_size=${pageSize}`);
 }
 
@@ -109,7 +104,7 @@ export async function createCategory(
 
 export async function updateCategory(
   id: string,
-  data: Omit<Category, "id" | "created_at" | "updated_at"> 
+  data: Omit<Category, "id" | "created_at" | "updated_at">
 ): Promise<Category> {
   const res = await apiFetch<CategoryResponse>(`/categories/${id}/`, jsonOptions("PUT", data));
   return res.category;

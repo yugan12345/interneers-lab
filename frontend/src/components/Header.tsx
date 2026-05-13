@@ -1,19 +1,18 @@
-/**
- * Header — site-wide navigation bar.
- * Week 7 advanced: header and navigation bar.
- * Week 8: nav links use React Router for client-side navigation.
- */
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Header.css";
 
-export default function Header() {
+interface Props {
+  onSettingsClick?: () => void;
+}
+
+export default function Header({ onSettingsClick }: Props) {
   const location = useLocation();
 
   const navLinks = [
     { to: "/",           label: "Products" },
     { to: "/categories", label: "Categories" },
+    { to: "/reports",    label: "Reports" },
   ];
 
   return (
@@ -38,6 +37,10 @@ export default function Header() {
             </Link>
           ))}
         </nav>
+
+        <button className="header-settings-btn" onClick={onSettingsClick}>
+          ⚙
+        </button>
       </div>
     </header>
   );

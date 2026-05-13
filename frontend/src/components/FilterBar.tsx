@@ -14,16 +14,16 @@ interface Props {
 }
 
 export default function FilterBar({ categories, onFilterChange, loading }: Props) {
-  const [search, setSearch]       = useState("");
-  const [minPrice, setMinPrice]   = useState("");
-  const [maxPrice, setMaxPrice]   = useState("");
+  const [search, setSearch] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const [categoryId, setCategoryId] = useState("");
 
   function handleApply() {
     const filters: ProductFilters = {};
-    if (search)     filters.search     = search;
-    if (minPrice)   filters.minPrice   = minPrice;
-    if (maxPrice)   filters.maxPrice   = maxPrice;
+    if (search) filters.search = search;
+    if (minPrice) filters.minPrice = minPrice;
+    if (maxPrice) filters.maxPrice = maxPrice;
     if (categoryId) filters.categoryId = categoryId;
     onFilterChange(filters);
   }
@@ -49,7 +49,7 @@ export default function FilterBar({ categories, onFilterChange, loading }: Props
           className="filter-input filter-search"
           placeholder="Search products…"
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           onKeyDown={handleKeyDown}
         />
       </div>
@@ -60,7 +60,7 @@ export default function FilterBar({ categories, onFilterChange, loading }: Props
         placeholder="Min price"
         value={minPrice}
         min={0}
-        onChange={e => setMinPrice(e.target.value)}
+        onChange={(e) => setMinPrice(e.target.value)}
         onKeyDown={handleKeyDown}
       />
 
@@ -72,35 +72,28 @@ export default function FilterBar({ categories, onFilterChange, loading }: Props
         placeholder="Max price"
         value={maxPrice}
         min={0}
-        onChange={e => setMaxPrice(e.target.value)}
+        onChange={(e) => setMaxPrice(e.target.value)}
         onKeyDown={handleKeyDown}
       />
 
       <select
         className="filter-input filter-select"
         value={categoryId}
-        onChange={e => setCategoryId(e.target.value)}
+        onChange={(e) => setCategoryId(e.target.value)}
       >
         <option value="">All categories</option>
-        {categories.map(cat => (
+        {categories.map((cat) => (
           <option key={cat.id} value={cat.id}>
             {cat.title}
           </option>
         ))}
       </select>
 
-      <button
-        className="filter-btn filter-btn-apply"
-        onClick={handleApply}
-        disabled={loading}
-      >
+      <button className="filter-btn filter-btn-apply" onClick={handleApply} disabled={loading}>
         {loading ? "Loading…" : "Apply →"}
       </button>
 
-      <button
-        className="filter-btn filter-btn-clear"
-        onClick={handleClear}
-      >
+      <button className="filter-btn filter-btn-clear" onClick={handleClear}>
         Clear
       </button>
     </div>

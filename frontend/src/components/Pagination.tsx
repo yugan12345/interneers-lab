@@ -12,12 +12,7 @@ interface Props {
   onPageChange: (page: number) => void;
 }
 
-export default function Pagination({
-  page,
-  totalPages,
-  totalProducts,
-  onPageChange,
-}: Props) {
+export default function Pagination({ page, totalPages, totalProducts, onPageChange }: Props) {
   if (totalPages <= 1) return null;
 
   return (

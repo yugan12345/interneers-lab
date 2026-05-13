@@ -61,7 +61,7 @@ export interface ProductPayload {
   brand: string;
   price: number;
   quantity: number;
-  category_id?: string | null; 
+  category_id?: string | null;
 }
 
 export interface ProductResponse {
