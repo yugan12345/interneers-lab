@@ -10,7 +10,7 @@ export default function Header({ onSettingsClick }: Props) {
   const location = useLocation();
 
   const navLinks = [
-    { to: "/",           label: "Products" },
+    { to: "/",           label: "Home" },
     { to: "/categories", label: "Categories" },
     { to: "/reports",    label: "Reports" },
   ];

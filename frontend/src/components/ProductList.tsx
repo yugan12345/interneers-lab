@@ -1,7 +1,7 @@
 /**
  * ProductList — renders a grid of product cards.
  * Clicking a card expands inline to show full product details.
- * No hardcoded dummy data — everything comes from the API via parent.
+ * Cards now show a product image thumbnail if image_url is set.
  */
 
 import React, { useState } from "react";
@@ -26,6 +26,8 @@ function ProductCard({
   isSelected: boolean;
   onClick: () => void;
 }) {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <div
       className={`product-card ${isSelected ? "selected" : ""}`}
@@ -35,6 +37,20 @@ function ProductCard({
       onKeyDown={(e) => e.key === "Enter" && onClick()}
       aria-expanded={isSelected}
     >
+      {/* Thumbnail */}
+      <div className="product-card-image-wrap">
+        {product.image_url && !imgError ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="product-card-image"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="product-card-image-placeholder">📦</div>
+        )}
+      </div>
+
       <div className="product-card-category">
         {product.category?.title ?? "Uncategorized"}
       </div>

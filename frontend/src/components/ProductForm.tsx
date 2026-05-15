@@ -15,6 +15,7 @@ interface Props {
 const empty = {
   name: "", description: "", brand: "",
   price: "", quantity: "", category: "",
+  image_url: "",
 };
 
 export default function ProductForm({
@@ -37,6 +38,7 @@ export default function ProductForm({
         price:       String(product.price ?? ""),
         quantity:    String(product.quantity ?? ""),
         category:    product.category?.id ?? "",
+        image_url:   product.image_url ?? "",
       });
     } else {
       setForm({ ...empty });
@@ -79,12 +81,23 @@ export default function ProductForm({
     if (Number(form.price) <= 0)    return setValidationError("Price must be greater than 0");
     if (Number(form.quantity) <= 0) return setValidationError("Quantity must be greater than 0");
 
+    const imageUrl = form.image_url.trim() || null;
+    if (
+      imageUrl && !imageUrl.startsWith("http://") &&
+      !imageUrl.startsWith("https://") &&
+      !imageUrl.startsWith("data:") &&
+      !imageUrl.startsWith("/")
+    ) {
+      return setValidationError("Image URL must be a valid URL (http, https, data URI) or absolute path");
+    }
+
     onSave({
       name:        form.name.trim(),
       description: form.description.trim(),
       brand:       form.brand.trim(),
       price:       Number(form.price),
       quantity:    Number(form.quantity),
+      image_url:   imageUrl,
       category_id: form.category || null,
     });
   }
@@ -122,6 +135,28 @@ export default function ProductForm({
                 value={form.quantity} onChange={handleChange} />
             </label>
           </div>
+
+          {/* Image URL */}
+          <label>
+            Image URL
+            <input
+              name="image_url"
+              type="url"
+              value={form.image_url}
+              onChange={handleChange}
+              placeholder="https://example.com/product.jpg (optional)"
+            />
+          </label>
+          {form.image_url && (
+            <div className="form-image-preview-wrap">
+              <img
+                src={form.image_url}
+                alt="preview"
+                className="form-image-preview"
+                onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
+              />
+            </div>
+          )}
 
           {/* Category selector + inline create */}
           <label>Category

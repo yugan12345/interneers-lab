@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./SettingsPanel.css";
 
 export type FontSize = "small" | "medium" | "large";
@@ -12,7 +12,7 @@ export interface Settings {
   pageSize: number;
 }
 
-export const defaultSettings: Settings = {
+export const factoryDefaults: Settings = {
   theme: "dark",
   fontSize: "medium",
   density: "comfortable",
@@ -20,14 +20,28 @@ export const defaultSettings: Settings = {
   pageSize: 9,
 };
 
+// Key used to store the user-defined default separately from live settings
+const USER_DEFAULT_KEY = "wh-settings-default";
+
+/** Load user-defined default, falling back to factory defaults */
+export function loadUserDefault(): Settings {
+  try {
+    const saved = localStorage.getItem(USER_DEFAULT_KEY);
+    return saved ? { ...factoryDefaults, ...JSON.parse(saved) } : factoryDefaults;
+  } catch {
+    return factoryDefaults;
+  }
+}
+
+// Exported as `defaultSettings` so App.tsx import works without any changes
+export const defaultSettings: Settings = loadUserDefault();
+
 /** Apply settings to the <html> element so CSS variables take effect globally */
 export function applySettings(s: Settings) {
   const root = document.documentElement;
 
-  // Theme
   root.setAttribute("data-theme", s.theme);
 
-  // Font size
   const fontSizeMap: Record<FontSize, string> = {
     small: "13px",
     medium: "15px",
@@ -35,7 +49,6 @@ export function applySettings(s: Settings) {
   };
   root.style.setProperty("--base-font-size", fontSizeMap[s.fontSize]);
 
-  // Density
   const densityMap: Record<Density, string> = {
     compact: "12px",
     comfortable: "24px",
@@ -46,7 +59,6 @@ export function applySettings(s: Settings) {
     s.density === "compact" ? "10px" : "16px"
   );
 
-  // Animations
   root.style.setProperty(
     "--transition-speed",
     s.animations ? "300ms" : "0ms"
@@ -61,7 +73,9 @@ interface Props {
 }
 
 export default function SettingsPanel({ settings, onChange, onClose }: Props) {
-  // Re-apply whenever settings change
+  const [savedToast, setSavedToast] = useState(false);
+  const [userDefault, setUserDefault] = useState<Settings>(loadUserDefault);
+
   useEffect(() => {
     applySettings(settings);
   }, [settings]);
@@ -70,14 +84,26 @@ export default function SettingsPanel({ settings, onChange, onClose }: Props) {
     onChange({ ...settings, [key]: value });
   }
 
+  function handleSetAsDefault() {
+    localStorage.setItem(USER_DEFAULT_KEY, JSON.stringify(settings));
+    setUserDefault(settings);
+    setSavedToast(true);
+    setTimeout(() => setSavedToast(false), 2200);
+  }
+
+  function handleReset() {
+    onChange(userDefault);
+  }
+
+  // True when current settings differ from the saved user default
+  const isModified = JSON.stringify(settings) !== JSON.stringify(userDefault);
+
   return (
     <div className="settings-overlay" onClick={onClose}>
       <div className="settings-panel" onClick={(e) => e.stopPropagation()}>
         <div className="settings-header">
           <h2>Settings</h2>
-          <button className="settings-close" onClick={onClose}>
-            ✕
-          </button>
+          <button className="settings-close" onClick={onClose}>✕</button>
         </div>
 
         <div className="settings-body">
@@ -153,9 +179,7 @@ export default function SettingsPanel({ settings, onChange, onClose }: Props) {
                 onChange={(e) => set("pageSize", Number(e.target.value))}
               >
                 {[6, 9, 12, 18, 24].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
+                  <option key={n} value={n}>{n}</option>
                 ))}
               </select>
             </div>
@@ -163,12 +187,27 @@ export default function SettingsPanel({ settings, onChange, onClose }: Props) {
         </div>
 
         <div className="settings-footer">
-          <button
-            className="btn-secondary"
-            onClick={() => onChange(defaultSettings)}
-          >
-            Reset to defaults
-          </button>
+          {savedToast && (
+            <div className="settings-toast">✓ Saved as default</div>
+          )}
+          <div className="settings-footer-actions">
+            <button
+              className="btn-secondary"
+              onClick={handleReset}
+              disabled={!isModified}
+              title="Reset to your saved default"
+            >
+              Reset
+            </button>
+            <button
+              className="btn-set-default"
+              onClick={handleSetAsDefault}
+              disabled={!isModified}
+              title="Save current settings as your default"
+            >
+              ★ Set as Default
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -31,7 +31,6 @@ class ProductCategoryRepository:
         return list(ProductCategory.objects.all())
 
     def count(self) -> int:
-        # Categories have no filters — plain count
         return ProductCategory.objects.count()
 
     def get_paginated(self, skip: int, limit: int) -> list:
@@ -60,6 +59,7 @@ class ProductRepository:
             price=float(data["price"]),
             brand=data["brand"],
             quantity=int(data["quantity"]),
+            image_url=data.get("image_url") or None,
             created_at=now,
             updated_at=now,
         )
@@ -75,21 +75,12 @@ class ProductRepository:
             return None
 
     def count(self, filters: dict = None) -> int:
-        """
-        Returns product count, optionally with DB-side filters applied.
-        filters is a dict of MongoEngine query kwargs e.g. {"brand": "Apple", "price__gte": 100}
-        """
         qs = Product.objects
         if filters:
             qs = qs.filter(**filters)
         return qs.count()
 
     def get_paginated(self, skip: int, limit: int, filters: dict = None) -> list:
-        """
-        Fetches a page of products using DB-side skip/limit with optional filters.
-        Both count() and get_paginated() must always receive the same filters
-        so pagination totals match the actual results returned.
-        """
         qs = Product.objects
         if filters:
             qs = qs.filter(**filters)
@@ -109,6 +100,9 @@ class ProductRepository:
             product.price = float(data["price"])
         if "quantity" in data:
             product.quantity = int(data["quantity"])
+        # image_url can be set to None (clear it) or a new URL
+        if "image_url" in data:
+            product.image_url = data["image_url"] or None
         if category is not False:
             product.category = category
         product.updated_at = datetime.now(timezone.utc)
@@ -137,6 +131,7 @@ class ProductRepository:
                 price=float(p["price"]),
                 brand=p["brand"],
                 quantity=int(p["quantity"]),
+                image_url=p.get("image_url") or None,
                 created_at=now,
                 updated_at=now,
             )

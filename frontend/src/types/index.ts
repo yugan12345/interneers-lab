@@ -1,10 +1,5 @@
 /**
  * Shared TypeScript types for the Inventory Management System.
- *
- * Defining types in one place means:
- *   - Every component agrees on the shape of a Product / Category
- *   - TypeScript catches mismatches at compile time, not runtime
- *   - Changing the API response shape only requires updating this file
  */
 export interface CategoryResponse {
   message: string;
@@ -27,6 +22,7 @@ export interface Product {
   brand: string;
   quantity: number;
   category: { id: string; title: string } | null;
+  image_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -61,6 +57,7 @@ export interface ProductPayload {
   brand: string;
   price: number;
   quantity: number;
+  image_url?: string | null;
   category_id?: string | null;
 }
 

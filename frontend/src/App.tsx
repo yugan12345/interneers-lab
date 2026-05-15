@@ -6,22 +6,35 @@ import CategoriesPage from "./pages/CategoriesPage";
 import ReportsPage from "./pages/ReportsPage";
 import WelcomeScreen from "./components/WelcomeScreen";
 import SettingsPanel, {
-  defaultSettings, type Settings
+  defaultSettings,
+  applySettings,
+  type Settings,
 } from "./components/SettingsPanel";
 import "./App.css";
 
 function NotFound() {
   return (
-    <div style={{
-      maxWidth: 1400, margin: "0 auto", padding: "80px 32px",
-      textAlign: "center", fontFamily: "'Syne', sans-serif",
-    }}>
+    <div
+      style={{
+        maxWidth: 1400,
+        margin: "0 auto",
+        padding: "80px 32px",
+        textAlign: "center",
+        fontFamily: "'Syne', sans-serif",
+      }}
+    >
       <div style={{ fontSize: 48, color: "#2a2a2a", marginBottom: 16 }}>◈</div>
       <h2 style={{ fontSize: 24, color: "#3d3d3d", marginBottom: 8 }}>
         404 — Page not found
       </h2>
-      <a href="/" style={{ color: "#1a1a1a", fontSize: 13,
-        fontFamily: "'DM Mono', monospace" }}>
+      <a
+        href="/"
+        style={{
+          color: "#1a1a1a",
+          fontSize: 13,
+          fontFamily: "'DM Mono', monospace",
+        }}
+      >
         ← Back to products
       </a>
     </div>
@@ -35,26 +48,25 @@ export default function App() {
     try {
       const saved = localStorage.getItem("wh-settings");
       return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
-    } catch { return defaultSettings; }
+    } catch {
+      return defaultSettings;
+    }
   });
 
-  // Persist settings to localStorage
+  // Apply ALL settings (theme, font size, density, animations) on every change
+  // and on first mount — this covers page refresh so no preferences are lost
+  useEffect(() => {
+    applySettings(settings);
+  }, [settings]);
+
+  // Persist settings to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("wh-settings", JSON.stringify(settings));
   }, [settings]);
 
-  // Apply settings as CSS variables and data attributes on <html>
-  useEffect(() => {
-    const root = document.documentElement;
-    root.setAttribute("data-theme", settings.theme);
-    root.setAttribute("data-density", settings.density);
-    root.setAttribute("data-font-size", settings.fontSize);
-    if (!settings.animations) {
-      root.style.setProperty("--transition-speed", "0s");
-    } else {
-      root.style.removeProperty("--transition-speed");
-    }
-  }, [settings]);
+  function handleSettingsChange(newSettings: Settings) {
+    setSettings(newSettings);
+  }
 
   if (!entered) {
     return <WelcomeScreen onEnter={() => setEntered(true)} />;
@@ -75,7 +87,7 @@ export default function App() {
       {showSettings && (
         <SettingsPanel
           settings={settings}
-          onChange={setSettings}
+          onChange={handleSettingsChange}
           onClose={() => setShowSettings(false)}
         />
       )}

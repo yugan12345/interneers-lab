@@ -175,3 +175,59 @@
   text-align: center;
   justify-content: center;
 }
+/* ── Footer actions row ──────────────────────────────────────────── */
+.settings-footer-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.settings-footer-actions .btn-secondary {
+  flex: 1;
+  text-align: center;
+  justify-content: center;
+}
+
+.btn-set-default {
+  flex: 2;
+  padding: 9px 16px;
+  border-radius: 7px;
+  border: none;
+  background: var(--accent, #c8ff00);
+  color: #000;
+  font-family: "Syne", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.btn-set-default:hover:not(:disabled) {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.btn-set-default:disabled,
+.settings-footer-actions .btn-secondary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Saved toast ─────────────────────────────────────────────────── */
+.settings-toast {
+  text-align: center;
+  font-family: "DM Mono", monospace;
+  font-size: 0.78rem;
+  color: var(--accent, #c8ff00);
+  padding: 6px 0 10px;
+  animation: toast-fade 2.2s ease forwards;
+}
+
+@keyframes toast-fade {
+  0%   { opacity: 0; transform: translateY(4px); }
+  15%  { opacity: 1; transform: translateY(0); }
+  75%  { opacity: 1; }
+  100% { opacity: 0; }
+}

@@ -1,12 +1,6 @@
 /**
  * Product — displays a single product's full details.
- *
- * Week 7: component populated with dummy data for layout.
- * Week 8: receives real Product data from parent or router params.
- *
- * Used in two contexts:
- *   1. As an expanded detail view inside ProductList (click to expand)
- *   2. As a standalone page at /products/:id
+ * Shows the product image if image_url is set, otherwise a placeholder.
  */
 
 import React from "react";
@@ -47,6 +41,25 @@ export default function Product({ product, onClose, onEdit, onDelete }: Props) {
               ✕
             </button>
           )}
+        </div>
+      </div>
+
+      {/* Product image */}
+      <div className="product-detail-image-wrap">
+        {product.image_url ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="product-detail-image"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+              (e.target as HTMLImageElement).nextElementSibling?.classList.remove("hidden");
+            }}
+          />
+        ) : null}
+        <div className={`product-detail-image-placeholder ${product.image_url ? "hidden" : ""}`}>
+          <span className="product-detail-image-icon">📦</span>
+          <span className="product-detail-image-label">No image</span>
         </div>
       </div>
 
