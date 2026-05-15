@@ -24,6 +24,14 @@ export function useProducts(pageSize = 9) {
 
   const refresh = useCallback(() => setTick((t) => t + 1), []);
 
+  // Wrap setFilters so that changing filters always resets to page 1.
+  // Without this, if the user is on page 3 and applies a filter that yields
+  // fewer than 3 pages, the backend returns a "Page X does not exist" error.
+  const updateFilters = useCallback((newFilters: ProductFilters | ((prev: ProductFilters) => ProductFilters)) => {
+    setPage(1);
+    setFilters(newFilters);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -56,7 +64,7 @@ export function useProducts(pageSize = 9) {
     totalPages,
     totalProducts,
     setPage,
-    setFilters,
+    setFilters: updateFilters,
     refresh,
   };
 }
