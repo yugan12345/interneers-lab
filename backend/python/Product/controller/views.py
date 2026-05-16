@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from .services import ProductService, ProductCategoryService
+from ..services.services import ProductService, ProductCategoryService
 
 PAGE_SIZE = 10
 

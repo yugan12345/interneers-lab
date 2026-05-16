@@ -33,7 +33,18 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS — environment-driven.
+#
+# In development set CORS_ALLOW_ALL_ORIGINS=True in .env for convenience.
+# In production, leave that unset (defaults False) and list every allowed
+# frontend origin in CORS_ALLOWED_ORIGINS, comma-separated, e.g.:
+#   CORS_ALLOWED_ORIGINS=https://app.example.com,https://admin.example.com
+_cors_allow_all = os.getenv("CORS_ALLOW_ALL_ORIGINS", "False").strip().lower() == "true"
+CORS_ALLOW_ALL_ORIGINS = _cors_allow_all
+
+if not CORS_ALLOW_ALL_ORIGINS:
+    _raw_origins = os.getenv("CORS_ALLOWED_ORIGINS", "")
+    CORS_ALLOWED_ORIGINS = [o.strip() for o in _raw_origins.split(",") if o.strip()]
 
 
 ROOT_URLCONF = "django_app.urls"

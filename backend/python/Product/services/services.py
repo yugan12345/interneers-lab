@@ -1,7 +1,7 @@
 import csv
 import io
-from .repositories import ProductRepository, ProductCategoryRepository
-from .validators import validate_product_data, validate_category_data, validate_csv_row
+from ..repositories.repositories import ProductRepository, ProductCategoryRepository
+from ..validators.validators import validate_product_data, validate_category_data, validate_csv_row
 
 """
     Service layer — owns all business logic for the Product and ProductCategory domains.

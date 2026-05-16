@@ -1,4 +1,4 @@
-from .models import Product, ProductCategory
+from ..models import Product, ProductCategory
 from datetime import datetime, timezone
 from mongoengine.errors import InvalidQueryError, ValidationError as MongoValidationError
 
