@@ -5,7 +5,6 @@ A full-stack inventory management system built as a learning project. The backen
 ```
 backend/
   python/      # Django REST API — products, categories, CSV import
-  go/          # Go backend — hello-world starter
 frontend/      # React + TypeScript inventory UI
 ```
 
@@ -16,7 +15,6 @@ frontend/      # React + TypeScript inventory UI
 | Tool | Version | Purpose |
 |------|---------|---------|
 | Python | 3.14+ | Django backend |
-| Go | 1.23.6 | Go backend |
 | Node.js | LTS | Frontend |
 | Yarn | 1.x | Frontend package manager |
 | Docker Desktop | Latest | MongoDB via Compose |
@@ -32,7 +30,7 @@ git clone git@github.com:<YourUsername>/interneers-lab.git
 cd interneers-lab
 ```
 
-### 2. Start MongoDB (shared by both backends)
+### 2. Start MongoDB
 
 ```bash
 cd backend/python
@@ -46,9 +44,7 @@ MongoDB runs on `localhost:27019`. Credentials are in `backend/python/.env`.
 ```bash
 cd backend/python
 
-# Copy and configure environment
 cp .env.example .env          # edit as needed (see Environment below)
-
 pip install -r requirements.txt
 python manage.py runserver    # http://localhost:8000
 ```
@@ -61,36 +57,28 @@ yarn install
 yarn start                    # http://localhost:3000
 ```
 
-### 5. Go backend (optional)
-
-```bash
-cd backend/go
-make setup                    # once
-make build-and-run
-```
-
 ---
 
 ## Environment Configuration
 
-All Django runtime settings are driven by `backend/python/.env`. Copy from `.env.example` and adjust:
+All Django runtime settings are driven by `backend/python/.env`. Copy from `.env.example` and fill in your own values:
 
 ```env
-SECRET_KEY=your-secret-key
-DEBUG=True
+SECRET_KEY=                   # generate a strong random key
+DEBUG=True                    # set False in production
 
-MONGO_HOST=localhost
-MONGO_PORT=27019
-MONGO_DB=interneers_lab
-MONGO_USERNAME=root
-MONGO_PASSWORD=example
-MONGO_AUTH_SOURCE=admin
-MONGO_TEST_DB=interneers_lab_test
+MONGO_HOST=
+MONGO_PORT=
+MONGO_DB=
+MONGO_USERNAME=
+MONGO_PASSWORD=
+MONGO_AUTH_SOURCE=
+MONGO_TEST_DB=
 
 # CORS — True only for local dev
 # In production set to False and list origins below
 CORS_ALLOW_ALL_ORIGINS=True
-# CORS_ALLOWED_ORIGINS=https://app.example.com,https://admin.example.com
+# CORS_ALLOWED_ORIGINS=https://your-frontend-domain.com
 ```
 
 ---
@@ -161,25 +149,17 @@ cd frontend
 # Unit tests (Jest)
 yarn test
 
-# E2E tests (Playwright) — first time only
+# E2E tests (Playwright) — install browsers once
 yarn playwright install
-
 yarn playwright test
 yarn playwright show-report
 ```
 
 Playwright CI runs automatically on push/PR via `.github/workflows/playwright.yml`.
 
-### Go
-
-```bash
-cd backend/go
-make test
-```
-
 ---
 
-## Project Structure (detail)
+## Project Structure
 
 ```
 backend/python/
@@ -219,6 +199,5 @@ frontend/
 - [React Router](https://reactrouter.com/home)
 - [TypeScript](https://www.typescriptlang.org/docs/)
 - [Playwright](https://playwright.dev/docs/intro)
-- [Go](https://go.dev/doc/)
 - [MongoDB](https://docs.mongodb.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
