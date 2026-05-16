@@ -1,6 +1,4 @@
 import json
-import csv
-import io
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.utils.decorators import method_decorator

@@ -41,7 +41,7 @@ export function useProducts(pageSize = 9) {
         if (cancelled) return;
         setProducts(data.products);
         setTotalPages(data.total_pages);
-        setTotalProducts(data.total_products); // ← was total_count
+        setTotalProducts(data.total_products);
       })
       .catch((e) => {
         if (cancelled) return;
