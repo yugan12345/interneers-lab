@@ -6,7 +6,7 @@
  * Handles loading state, error state, loading spinners, and full CRUD.
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FilterBar from "../components/FilterBar";
 import ProductList from "../components/ProductList";
 import Pagination from "../components/Pagination";
@@ -34,13 +34,20 @@ export default function ProductsPage({ pageSize = 9 }: Props) {
     refresh,
   } = useProducts(pageSize);
 
-  const { categories, refresh: refreshCategories } = useCategories();
+  const { categories, loading: categoriesLoading, refresh: refreshCategories } = useCategories();
 
   // null = form closed | undefined = creating new | Product = editing existing
   const [formProduct, setFormProduct] = useState<Product | undefined | null>(null);
   const [saving, setSaving] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [extraCategories, setExtraCategories] = useState<Category[]>([]);
+
+  // Once the categories hook finishes re-fetching (loading flips false),
+  // the new category is already in `categories`, so clear extraCategories
+  // to prevent it appearing twice in allCategories.
+  useEffect(() => {
+    if (!categoriesLoading) setExtraCategories([]);
+  }, [categoriesLoading]);
 
   const allCategories = [...categories, ...extraCategories];
 
@@ -74,8 +81,10 @@ export default function ProductsPage({ pageSize = 9 }: Props) {
   }
 
   function handleCategoryCreated(cat: Category) {
+    // Optimistically show the new category immediately while the API re-fetches.
+    // The useEffect above clears extraCategories once categoriesLoading settles,
+    // at which point `categories` from the hook already contains it.
     setExtraCategories((prev) => [...prev, cat]);
-    // Also refresh the main categories hook so FilterBar stays in sync
     refreshCategories?.();
   }
 
